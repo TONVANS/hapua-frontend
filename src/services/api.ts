@@ -1,11 +1,20 @@
 import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api/v1";
+// On the client (browser), ALWAYS use relative URL '/api/v1' to mask the backend host and port.
+// On the server, use INTERNAL_BACKEND_URL to talk directly to the backend.
+const getApiBaseUrl = (): string => {
+  if (typeof window !== "undefined") {
+    return process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+  }
+  return (
+    process.env.INTERNAL_BACKEND_URL ||
+    "http://localhost:3001/api/v1"
+  );
+};
 
 export const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getApiBaseUrl(),
   timeout: 15000,
 });
 

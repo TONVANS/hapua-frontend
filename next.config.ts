@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
 
-const backendApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
-const backendBaseUrl = backendApiUrl.replace(/\/api\/v1\/?$/, '');
+const internalBackendUrl =
+  process.env.INTERNAL_BACKEND_URL || 'http://localhost:3001/api/v1';
+const backendBaseUrl = internalBackendUrl.replace(/\/api\/v1\/?$/, '');
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       {
@@ -30,7 +33,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/v1/:path*',
-        destination: `${backendApiUrl}/:path*`,
+        destination: `${internalBackendUrl}/:path*`,
       },
       {
         source: '/api/media/:path*',
