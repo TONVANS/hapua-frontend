@@ -73,14 +73,17 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
 
       // Save in cookies (4 hours expiration)
+      // Use secure flag only when actually on HTTPS (not just NODE_ENV=production)
+      // This allows HTTP-only production deployments (e.g. internal IP without SSL) to work
+      const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
       Cookies.set("hapua_token", accessToken, {
         expires: 4 / 24,
-        secure: process.env.NODE_ENV === "production",
+        secure: isHttps,
         sameSite: "lax",
       });
       Cookies.set("hapua_user", JSON.stringify(user), {
         expires: 4 / 24,
-        secure: process.env.NODE_ENV === "production",
+        secure: isHttps,
         sameSite: "lax",
       });
 
