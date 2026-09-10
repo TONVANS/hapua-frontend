@@ -84,8 +84,8 @@ export default async function LandingPage() {
     eventDays: 5,
   };
 
-  const hotels = overview?.featuredHotels?.slice(0, 3) || [];
-  const travelSpots = overview?.featuredTravel?.slice(0, 2) || [];
+  const hotels = overview?.featuredHotels?.slice(0, 2) || [];
+  const travelSpots = overview?.featuredTravel?.slice(0, 3) || [];
 
   return (
     <div className="relative">

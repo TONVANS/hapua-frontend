@@ -56,6 +56,7 @@ export function HeroSection({ stats }: HeroSectionProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft);
 
   useEffect(() => {
+    setTimeLeft(calculateTimeLeft());
     const interval = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
@@ -184,27 +185,27 @@ export function HeroSection({ stats }: HeroSectionProps) {
                   Sep 21, 2026 • 08:30 AM
                 </span>
               </div>
-              <div className="grid grid-cols-4 gap-2 text-center">
+              <div className="grid grid-cols-4 gap-2 text-center" suppressHydrationWarning>
                 <div className="bg-[#f7f9fb] p-2 rounded-xl border border-slate-200">
-                  <div className="text-xl sm:text-2xl font-black text-[#002660]">
+                  <div className="text-xl sm:text-2xl font-black text-[#002660]" suppressHydrationWarning>
                     {timeLeft.days}
                   </div>
                   <div className="text-[10px] uppercase font-bold text-[#4f616f]">Days</div>
                 </div>
                 <div className="bg-[#f7f9fb] p-2 rounded-xl border border-slate-200">
-                  <div className="text-xl sm:text-2xl font-black text-[#002660]">
+                  <div className="text-xl sm:text-2xl font-black text-[#002660]" suppressHydrationWarning>
                     {timeLeft.hours}
                   </div>
                   <div className="text-[10px] uppercase font-bold text-[#4f616f]">Hours</div>
                 </div>
                 <div className="bg-[#f7f9fb] p-2 rounded-xl border border-slate-200">
-                  <div className="text-xl sm:text-2xl font-black text-[#002660]">
+                  <div className="text-xl sm:text-2xl font-black text-[#002660]" suppressHydrationWarning>
                     {timeLeft.minutes}
                   </div>
                   <div className="text-[10px] uppercase font-bold text-[#4f616f]">Mins</div>
                 </div>
                 <div className="bg-[#f7f9fb] p-2 rounded-xl border border-slate-200">
-                  <div className="text-xl sm:text-2xl font-black text-[#cca730]">
+                  <div className="text-xl sm:text-2xl font-black text-[#cca730]" suppressHydrationWarning>
                     {timeLeft.seconds}
                   </div>
                   <div className="text-[10px] uppercase font-bold text-[#4f616f]">Secs</div>
