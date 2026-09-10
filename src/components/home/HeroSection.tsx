@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useTransform, useSpring } from 'motion/react';
+import Image from 'next/image';
+import { motion } from 'motion/react';
 import {
   Sparkles,
   Users,
@@ -32,101 +33,61 @@ interface TimeLeft {
   seconds: number;
 }
 
+const TARGET_DATE = new Date('2026-09-21T08:30:00+07:00').getTime();
+
+function calculateTimeLeft(): TimeLeft {
+  const now = Date.now();
+  const distance = TARGET_DATE - now;
+
+  if (distance <= 0) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  }
+
+  return {
+    days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+    minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+    seconds: Math.floor((distance % (1000 * 60)) / 1000),
+  };
+}
+
 export function HeroSection({ stats }: HeroSectionProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  // Multi-tier scroll parallax tracking
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  // Ultra-responsive spring physics with low inertia lag for silky smooth 60/120fps motion
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 24,
-    mass: 0.12,
-    restDelta: 0.0001,
-  });
-
-  // Harmonious multi-depth parallax transformations
-  const bgY = useTransform(smoothProgress, [0, 1], ['0%', '16%']);
-  const bgScale = useTransform(smoothProgress, [0, 1], [1, 1.08]);
-  const leftContentY = useTransform(smoothProgress, [0, 1], [0, -35]);
-  const rightCardY = useTransform(smoothProgress, [0, 1], [0, -22]);
-  const rightCardRotateX = useTransform(smoothProgress, [0, 1], [0, 4.5]);
-  const rightCardRotateY = useTransform(smoothProgress, [0, 1], [0, -2.5]);
-  const floatingBadgeY = useTransform(smoothProgress, [0, 1], [0, -55]);
-  const statsY = useTransform(smoothProgress, [0, 1], [0, -15]);
-  const opacityFade = useTransform(smoothProgress, [0, 0.7, 1], [1, 0.85, 0]);
-
-  // Real-time Countdown to September 21, 2026 08:30:00 (Lao PDR UTC+7)
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+  // Real-time Countdown initialized lazily to eliminate initial mount re-render
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft);
 
   useEffect(() => {
-    const targetDate = new Date('2026-09-21T08:30:00+07:00').getTime();
-
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const distance = targetDate - now;
-
-      if (distance <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      setTimeLeft({ days, hours, minutes, seconds });
-    }
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
+    const interval = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="relative min-h-[94vh] pt-32 pb-16 lg:pt-40 lg:pb-24 overflow-hidden flex flex-col justify-between"
-    >
-      {/* 1. Deep Parallax Background Layer (Images & Light) */}
-      <motion.div
-        style={{ y: bgY, scale: bgScale }}
-        className="absolute inset-0 -z-30 pointer-events-none overflow-hidden will-change-transform"
-      >
+    <div className="relative min-h-[94vh] pt-32 pb-16 lg:pt-40 lg:pb-24 overflow-hidden flex flex-col justify-between">
+      {/* 1. Static Deep Atmospheric Background Layer */}
+      <div className="absolute inset-0 -z-30 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#f7f9fb]/75 via-[#f7f9fb]/40 to-[#f7f9fb] z-10" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#001945]/35 via-transparent to-[#002660]/25 z-10" />
-        <img
+        <Image
           src="/images/background1.webp"
           alt="Luang Prabang Heritage Valley"
-          className="w-full h-full object-cover object-center blur-[1px] opacity-80"
+          fill
+          priority
+          sizes="100vw"
+          quality={75}
+          className="object-cover object-center opacity-80"
         />
-      </motion.div>
+      </div>
 
       {/* 2. Atmospheric Luminous Flares */}
       <div className="absolute top-20 left-1/4 w-[420px] h-[420px] bg-gradient-to-br from-[#ffe088]/25 to-transparent rounded-full blur-3xl pointer-events-none -z-20 animate-pulse duration-1000" />
       <div className="absolute top-44 right-1/4 w-[500px] h-[500px] bg-gradient-to-bl from-[#8ca9f1]/20 to-transparent rounded-full blur-3xl pointer-events-none -z-20" />
 
-      {/* 3. Main Hero Container with Multi-Plane Depth */}
-      <motion.div
-        style={{ opacity: opacityFade }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full"
-      >
+      {/* 3. Main Hero Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-          {/* Left Column: Official Branding & Summit Details (Translates Up on Scroll) */}
-          <motion.div
-            style={{ y: leftContentY }}
-            className="flex-1 text-center lg:text-left space-y-7 will-change-transform"
-          >
+          {/* Left Column: Official Branding & Summit Details */}
+          <div className="flex-1 text-center lg:text-left space-y-7">
             {/* Host Ribbon & Official Summit Tag */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -158,9 +119,12 @@ export function HeroSection({ stats }: HeroSectionProps) {
                 className="flex flex-col items-center lg:items-start gap-3"
               >
                 <div className="relative group cursor-pointer inline-block">
-                  <img
+                  <Image
                     src="/images/hapua_logo.webp"
                     alt="HAPUA - Heads of ASEAN Power Utilities / Authorities"
+                    width={220}
+                    height={60}
+                    priority
                     className="h-11 sm:h-13 md:h-14 lg:h-16 w-auto object-contain drop-shadow-[0_3px_10px_rgba(0,38,96,0.10)] transition-transform duration-300 group-hover:scale-[1.02]"
                   />
                 </div>
@@ -276,26 +240,25 @@ export function HeroSection({ stats }: HeroSectionProps) {
                 </Button>
               </Link>
             </motion.div>
-          </motion.div>
+          </div>
 
-          {/* Right Column: 3D Parallax Visual Card */}
+          {/* Right Column: Visual Card */}
           <motion.div
-            style={{
-              y: rightCardY,
-              rotateX: rightCardRotateX,
-              rotateY: rightCardRotateY,
-              transformPerspective: 1200,
-            }}
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex-1 relative w-full max-w-lg lg:max-w-none will-change-transform transform-gpu"
+            className="flex-1 relative w-full max-w-lg lg:max-w-none"
           >
             <div className="relative aspect-4/3 rounded-3xl overflow-hidden shadow-2xl border-2 border-white/80 group transition-transform duration-500 hover:scale-[1.01]">
-              <img
+              <Image
                 src="/images/welcome.webp"
                 alt="Luang Prabang Summit Venue"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
+                fill
+                priority
+                fetchPriority="high"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                quality={80}
+                className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
               />
 
               {/* Gradient Scrim */}
@@ -325,13 +288,12 @@ export function HeroSection({ stats }: HeroSectionProps) {
               </div>
             </div>
 
-            {/* Floating Info Pill Over Card (Layered Parallax + Micro-Float) */}
+            {/* Floating Info Pill Over Card */}
             <motion.div
-              style={{ y: floatingBadgeY }}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="absolute -bottom-6 -left-4 sm:-left-6 bg-white/95 backdrop-blur-xl p-3 sm:p-4 rounded-2xl border border-[#cca730]/40 shadow-2xl flex items-center gap-3 will-change-transform transform-gpu"
+              className="absolute -bottom-6 -left-4 sm:-left-6 bg-white/95 backdrop-blur-xl p-3 sm:p-4 rounded-2xl border border-[#cca730]/40 shadow-2xl flex items-center gap-3"
             >
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#cca730] to-[#947118] text-white flex items-center justify-center font-bold shadow-md shrink-0 animate-pulse">
                 <Globe2 className="w-5 h-5 text-white" />
@@ -347,13 +309,10 @@ export function HeroSection({ stats }: HeroSectionProps) {
             </motion.div>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* 4. Dynamic Key Summit Stats Banner with Smooth Elevation */}
-      <motion.div
-        style={{ y: statsY }}
-        className="mt-16 lg:mt-20 py-8 relative z-20 will-change-transform transform-gpu"
-      >
+      {/* 4. Key Summit Stats Banner */}
+      <div className="mt-16 lg:mt-20 py-8 relative z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             <motion.div
@@ -417,7 +376,7 @@ export function HeroSection({ stats }: HeroSectionProps) {
             </motion.div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -6,6 +6,12 @@ export function ShaderBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    // Skip WebGL on mobile devices (< 768px) or if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion || window.innerWidth < 768) {
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -22,7 +28,7 @@ export function ShaderBackground() {
     `;
 
     const fsSource = `
-      precision highp float;
+      precision mediump float;
       varying vec2 v_texCoord;
       uniform float u_time;
       uniform vec2 u_resolution;
@@ -84,10 +90,12 @@ export function ShaderBackground() {
     const uTime = gl.getUniformLocation(program, 'u_time');
     const uRes = gl.getUniformLocation(program, 'u_resolution');
 
+    // Render at half resolution for ambient background to save 75% GPU fragment computations
     function syncSize() {
       if (!canvas) return;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const scale = 0.5;
+      const w = Math.round(window.innerWidth * scale);
+      const h = Math.round(window.innerHeight * scale);
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;
@@ -95,22 +103,40 @@ export function ShaderBackground() {
     }
 
     syncSize();
-    window.addEventListener('resize', syncSize);
+    window.addEventListener('resize', syncSize, { passive: true });
 
     let animationFrameId: number;
+    let lastTime = 0;
+    const frameInterval = 1000 / 30; // Cap at 30fps for smooth ambient wave without CPU overhead
+
     function render(t: number) {
+      animationFrameId = requestAnimationFrame(render);
+      if (document.hidden) return;
+      if (t - lastTime < frameInterval) return;
+      lastTime = t;
+
       if (!gl || !canvas) return;
       gl.viewport(0, 0, canvas.width, canvas.height);
       if (uTime) gl.uniform1f(uTime, t * 0.001);
       if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      animationFrameId = requestAnimationFrame(render);
     }
 
     animationFrameId = requestAnimationFrame(render);
 
+    const handleVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationFrameId);
+      } else {
+        lastTime = performance.now();
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     return () => {
       window.removeEventListener('resize', syncSize);
+      document.removeEventListener('visibilitychange', handleVisibility);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

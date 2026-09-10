@@ -11,9 +11,14 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Check if user prefers reduced motion
+    // Check if user prefers reduced motion or is on mobile/touch device
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
+    const isTouchOrMobile =
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.innerWidth < 1024;
+
+    if (prefersReducedMotion || isTouchOrMobile) {
       return;
     }
 

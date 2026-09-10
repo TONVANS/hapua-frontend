@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'motion/react';
 
 interface ParallaxImageProps {
@@ -31,13 +32,19 @@ export function ParallaxImage({
       ref={containerRef}
       className={`relative overflow-hidden w-full h-full ${className}`}
     >
-      <motion.img
-        src={src}
-        alt={alt}
+      <motion.div
         style={{ y, scale }}
-        className="w-full h-full object-cover will-change-transform"
-        loading="lazy"
-      />
+        className="w-full h-full relative will-change-transform transform-gpu"
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover"
+          loading="lazy"
+        />
+      </motion.div>
     </div>
   );
 }

@@ -1,14 +1,47 @@
 import React from 'react';
-import {
-  HeroSection,
-  AseanTicker,
-  ActivitiesBento,
-  FeaturedHotelsSection,
-  TravelGuideSection,
-  CallToActionSection,
-  ParallaxFloatingOrbs,
-} from '@/components/home';
+import dynamic from 'next/dynamic';
+import { HeroSection } from '@/components/home/HeroSection';
 import { LandingOverview } from '@/types';
+
+// Dynamically code-split below-the-fold components to slash initial JS execution & TBT
+const ParallaxFloatingOrbs = dynamic(
+  () => import('@/components/home/ParallaxFloatingOrbs').then((m) => m.ParallaxFloatingOrbs)
+);
+
+const AseanTicker = dynamic(
+  () => import('@/components/home/AseanTicker').then((m) => m.AseanTicker),
+  {
+    loading: () => <div className="h-44 my-8 w-full max-w-7xl mx-auto px-4 animate-pulse bg-slate-100/60 rounded-2xl" />,
+  }
+);
+
+const ActivitiesBento = dynamic(
+  () => import('@/components/home/ActivitiesBento').then((m) => m.ActivitiesBento),
+  {
+    loading: () => <div className="min-h-[500px] my-12 w-full max-w-7xl mx-auto px-4 animate-pulse bg-slate-100/40 rounded-3xl" />,
+  }
+);
+
+const FeaturedHotelsSection = dynamic(
+  () => import('@/components/home/FeaturedHotelsSection').then((m) => m.FeaturedHotelsSection),
+  {
+    loading: () => <div className="min-h-[420px] my-12 w-full max-w-7xl mx-auto px-4 animate-pulse bg-slate-100/40 rounded-3xl" />,
+  }
+);
+
+const TravelGuideSection = dynamic(
+  () => import('@/components/home/TravelGuideSection').then((m) => m.TravelGuideSection),
+  {
+    loading: () => <div className="min-h-[420px] my-12 w-full max-w-7xl mx-auto px-4 animate-pulse bg-slate-100/40 rounded-3xl" />,
+  }
+);
+
+const CallToActionSection = dynamic(
+  () => import('@/components/home/CallToActionSection').then((m) => m.CallToActionSection),
+  {
+    loading: () => <div className="min-h-[320px] my-12 w-full max-w-5xl mx-auto px-4 animate-pulse bg-slate-100/40 rounded-3xl" />,
+  }
+);
 
 // Cache data on Next.js server for 5 minutes (ISR)
 export const revalidate = 300;
@@ -21,7 +54,7 @@ async function getLandingData(): Promise<LandingOverview | null> {
 
   try {
     const res = await fetch(`${backendUrl}/public/landing`, {
-      next: { revalidate: 300 },
+      next: { revalidate: 300, tags: ['landing-overview'] },
       headers: {
         Accept: 'application/json',
       },

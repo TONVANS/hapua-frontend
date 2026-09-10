@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Header, Footer, ShaderBackground } from '@/components/layout';
 import { SmoothScrollProvider } from '@/components/providers';
@@ -31,12 +32,15 @@ export default function PublicLayout({
       {/* 3. Global Atmospheric Parallax Background Layer */}
       <motion.div
         style={{ y: bgY }}
-        className="fixed inset-0 pointer-events-none -z-40 opacity-40 overflow-hidden"
+        className="fixed inset-0 pointer-events-none -z-40 opacity-40 overflow-hidden will-change-transform transform-gpu"
       >
-        <img
+        <Image
           src="/images/background.webp"
           alt="Parallax Background"
-          className="w-full h-full object-cover blur-[2px]"
+          fill
+          sizes="100vw"
+          quality={70}
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#f7f9fb]/90 via-[#f7f9fb]/80 to-[#f7f9fb]" />
       </motion.div>

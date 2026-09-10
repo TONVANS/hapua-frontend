@@ -460,7 +460,7 @@ export function AseanTicker() {
               }`}
               style={{ animationPlayState: isPlaying ? 'running' : 'paused' }}
             >
-              {[...track1, ...track1, ...track1, ...track1].map((org, index) => (
+              {[...track1, ...track1].map((org, index) => (
                 <OrgLogoCard
                   key={`t1-${org.id}-${index}`}
                   org={org}
@@ -478,7 +478,7 @@ export function AseanTicker() {
               }`}
               style={{ animationPlayState: isPlaying ? 'running' : 'paused' }}
             >
-              {[...track2, ...track2, ...track2, ...track2].map((org, index) => (
+              {[...track2, ...track2].map((org, index) => (
                 <OrgLogoCard
                   key={`t2-${org.id}-${index}`}
                   org={org}
