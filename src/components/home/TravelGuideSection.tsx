@@ -142,7 +142,7 @@ export function TravelGuideSection({ travelSpots, loading }: TravelGuideSectionP
               transition={{ delay: 0.1 }}
               className="text-3xl sm:text-4xl font-extrabold text-[#002660] tracking-tight"
             >
-              Luang Prabang Travel & Culture Guide
+              Luang Prabang Culture & Visits Guide
             </motion.h2>
             <div className="h-1 w-20 bg-gradient-to-r from-[#002660] to-[#cca730] rounded-full" />
             <motion.p
