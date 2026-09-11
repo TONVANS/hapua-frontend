@@ -81,7 +81,7 @@ export function ActivitiesBento() {
             className="md:col-span-8 group relative overflow-hidden rounded-3xl glass-panel min-h-90 sm:min-h-105 shadow-2xl hover-lift border border-white/80 will-change-transform"
           >
             <ParallaxImage
-              src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80"
+              src="https://www.ahstatic.com/photos/9112_sm_00_p_2048x1536.jpg"
               alt="42nd HAPUA Council Plenary Session"
               speed={16}
               className="absolute inset-0"
