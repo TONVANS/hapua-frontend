@@ -12,6 +12,9 @@ import {
   Timer,
   ChevronDown,
   CheckCircle2,
+  FileText,
+  Camera,
+  Link2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -325,6 +328,78 @@ export function ActivityEditModal({
                   </span>
                 </div>
               )}
+            </div>
+
+            {/* SECTION 4: External Resource Links (Optional) */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-1.5 border-b border-slate-100">
+                <Link2 className="w-4 h-4 text-[#002660]" />
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#002660]">
+                  4. Session Materials & Cloud Links (Optional)
+                </h4>
+              </div>
+
+              <div className="space-y-3">
+                {/* docURL */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="edit-docURL" className="text-xs font-semibold text-[#002660] flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-[#002660]" />
+                      Session Document URL (docURL)
+                    </Label>
+                    <span className="text-[10px] text-slate-400">PDF, Presentation, Google Drive, OneDrive</span>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="edit-docURL"
+                      type="url"
+                      placeholder="https://drive.google.com/... or https://..."
+                      className="h-10 text-xs bg-[#f7f9fb] border-[#e2e8f0] rounded-xl focus-visible:ring-[#002660]/20 pl-8 transition-all"
+                      {...form.register('docURL')}
+                    />
+                    <FileText className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                  {form.formState.errors.docURL && (
+                    <p className="text-[11px] text-[#ba1a1a] font-medium flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {form.formState.errors.docURL.message}
+                    </p>
+                  )}
+                  <p className="text-[10px] text-slate-400 leading-tight">
+                    Delegates and council members can view or download ministerial minutes and briefing documents from this link.
+                  </p>
+                </div>
+
+                {/* allImageURL */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="edit-allImageURL" className="text-xs font-semibold text-[#002660] flex items-center gap-1.5">
+                      <Camera className="w-3.5 h-3.5 text-[#002660]" />
+                      Full Photo Album / Gallery URL (allImageURL)
+                    </Label>
+                    <span className="text-[10px] text-slate-400">Google Photos, Flickr, Cloud Archive</span>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="edit-allImageURL"
+                      type="url"
+                      placeholder="https://photos.app.goo.gl/... or https://..."
+                      className="h-10 text-xs bg-[#f7f9fb] border-[#e2e8f0] rounded-xl focus-visible:ring-[#002660]/20 pl-8 transition-all"
+                      {...form.register('allImageURL')}
+                    />
+                    <Camera className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                  {form.formState.errors.allImageURL && (
+                    <p className="text-[11px] text-[#ba1a1a] font-medium flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {form.formState.errors.allImageURL.message}
+                    </p>
+                  )}
+                  <p className="text-[10px] text-slate-400 leading-tight">
+                    Link to the complete high-resolution photo repository where delegates can browse and download all session photos.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 

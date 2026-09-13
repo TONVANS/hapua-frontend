@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Calendar, Clock, MapPin, FileText, Camera, ExternalLink } from 'lucide-react';
 import { Activity } from '@/types';
 import { formatEventDate } from '@/components/admin/activities/utils';
 
@@ -62,6 +62,35 @@ export function ActivityCheckInInfoCard({ activity }: ActivityCheckInInfoCardPro
           <span className="truncate">{activity.room?.name || 'Off-site / Virtual Event'}</span>
         </div>
       </div>
+
+      {(activity.docURL || activity.allImageURL) && (
+        <div className="mt-4 pt-3.5 border-t border-slate-200/70 flex flex-wrap items-center gap-2">
+          {activity.docURL && (
+            <a
+              href={activity.docURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50/90 hover:bg-blue-100 text-[#002660] text-xs font-semibold border border-blue-200/80 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            >
+              <FileText className="w-3.5 h-3.5 text-[#002660]" />
+              <span>Session Documents</span>
+              <ExternalLink className="w-3 h-3 opacity-70" />
+            </a>
+          )}
+          {activity.allImageURL && (
+            <a
+              href={activity.allImageURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50/90 hover:bg-amber-100 text-amber-900 text-xs font-semibold border border-amber-200/80 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            >
+              <Camera className="w-3.5 h-3.5 text-amber-700" />
+              <span>Photo Album</span>
+              <ExternalLink className="w-3 h-3 opacity-70" />
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
 }

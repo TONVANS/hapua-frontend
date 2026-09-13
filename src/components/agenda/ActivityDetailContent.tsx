@@ -67,10 +67,14 @@ export function ActivityDetailContent({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column (2 Cols): Description, Room & Photos */}
         <div className="lg:col-span-2 space-y-8">
-          <ActivityOverviewCard description={activity.description} />
+          <ActivityOverviewCard
+            description={activity.description}
+            docURL={activity.docURL}
+          />
           {activity.room && <ActivityVenueCard room={activity.room} />}
           <ActivityMediaGallery
             gallery={gallery}
+            allImageURL={activity.allImageURL}
             onOpenLightbox={(idx) => {
               setLightboxIndex(idx);
               setLightboxOpen(true);

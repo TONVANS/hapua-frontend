@@ -22,6 +22,12 @@ import {
   ArrowRight,
   Globe,
   Printer,
+  FileText,
+  Camera,
+  Link2,
+  ExternalLink,
+  Copy,
+  CheckCheck,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -100,6 +106,22 @@ export function ActivityViewModal({
   const [selectedCountryFilter, setSelectedCountryFilter] = useState<string>('ALL');
   const [selectedOrgFilter, setSelectedOrgFilter] = useState<string>('ALL');
   const [copiedAttendeeList, setCopiedAttendeeList] = useState(false);
+  const [copiedDocUrl, setCopiedDocUrl] = useState(false);
+  const [copiedImageUrl, setCopiedImageUrl] = useState(false);
+
+  const handleCopyDocUrl = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedDocUrl(true);
+    toast.success('Document URL copied to clipboard');
+    setTimeout(() => setCopiedDocUrl(false), 2000);
+  };
+
+  const handleCopyImageUrl = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedImageUrl(true);
+    toast.success('Photo album URL copied to clipboard');
+    setTimeout(() => setCopiedImageUrl(false), 2000);
+  };
 
   // Sync initial activity and fetch fresh findOne details when modal opens
   useEffect(() => {
@@ -613,6 +635,127 @@ export function ActivityViewModal({
                         No indoor room assigned (External site tour).
                       </div>
                     )}
+                  </div>
+                </div>
+
+                {/* Official Session Resources & Cloud Links */}
+                <div className="p-3.5 rounded-xl bg-slate-50/70 border border-slate-200/80 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-200/60">
+                    <div className="flex items-center gap-1.5 font-bold text-xs text-[#002660]">
+                      <Link2 className="w-3.5 h-3.5 text-[#002660]" />
+                      <span>Official Resources & Cloud Links</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400">
+                      External documents & photo archives
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {/* Document Card */}
+                    <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex flex-col justify-between gap-2.5">
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#002660] border border-blue-100 flex items-center justify-center shrink-0">
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-slate-900">Session Documentation</p>
+                          {currentActivity.docURL ? (
+                            <p className="text-[11px] text-slate-500 truncate mt-0.5" title={currentActivity.docURL}>
+                              {currentActivity.docURL}
+                            </p>
+                          ) : (
+                            <p className="text-[11px] text-slate-400 italic mt-0.5">
+                              No document link attached
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {currentActivity.docURL ? (
+                        <div className="flex items-center gap-1.5 pt-1 border-t border-slate-100">
+                          <a
+                            href={currentActivity.docURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#002660] hover:bg-[#1a3c7d] text-white text-[11px] font-semibold transition-colors shadow-2xs cursor-pointer"
+                          >
+                            <span>Open Document</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => handleCopyDocUrl(currentActivity.docURL!)}
+                            className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 text-[11px] transition-colors cursor-pointer"
+                            title="Copy document URL"
+                          >
+                            {copiedDocUrl ? (
+                              <CheckCheck className="w-3.5 h-3.5 text-emerald-600" />
+                            ) : (
+                              <Copy className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="pt-1 border-t border-slate-100">
+                          <span className="text-[10px] text-slate-400">
+                            Add via Edit Activity session
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Photo Album Card */}
+                    <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex flex-col justify-between gap-2.5">
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center shrink-0">
+                          <Camera className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-slate-900">Complete Photo Archive</p>
+                          {currentActivity.allImageURL ? (
+                            <p className="text-[11px] text-slate-500 truncate mt-0.5" title={currentActivity.allImageURL}>
+                              {currentActivity.allImageURL}
+                            </p>
+                          ) : (
+                            <p className="text-[11px] text-slate-400 italic mt-0.5">
+                              No cloud album attached
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {currentActivity.allImageURL ? (
+                        <div className="flex items-center gap-1.5 pt-1 border-t border-slate-100">
+                          <a
+                            href={currentActivity.allImageURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#002660] hover:bg-[#1a3c7d] text-white text-[11px] font-semibold transition-colors shadow-2xs cursor-pointer"
+                          >
+                            <span>Open Album</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => handleCopyImageUrl(currentActivity.allImageURL!)}
+                            className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 text-[11px] transition-colors cursor-pointer"
+                            title="Copy photo album URL"
+                          >
+                            {copiedImageUrl ? (
+                              <CheckCheck className="w-3.5 h-3.5 text-emerald-600" />
+                            ) : (
+                              <Copy className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="pt-1 border-t border-slate-100">
+                          <span className="text-[10px] text-slate-400">
+                            Add via Edit Activity session
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

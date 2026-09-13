@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { Calendar, Clock, MapPin, QrCode, Check, Copy, Sparkles, Building2, ShieldCheck } from 'lucide-react';
+import { Calendar, Clock, MapPin, QrCode, Check, Copy, Sparkles, Building2, ShieldCheck, FileText, Camera, ExternalLink } from 'lucide-react';
 import { Activity } from '@/types';
 import { formatEventDate } from '@/components/admin/activities/utils';
 
@@ -119,6 +119,32 @@ export function ActivityDetailHero({
               <MapPin className="w-4 h-4 text-[#cca730]" />
               <span>{activity.room.name}</span>
             </div>
+          )}
+
+          {activity.docURL && (
+            <a
+              href={activity.docURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-bold text-[#002660] bg-blue-50/90 hover:bg-blue-100/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-blue-200/80 shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            >
+              <FileText className="w-4 h-4 text-[#002660]" />
+              <span>Session Brief / Docs</span>
+              <ExternalLink className="w-3.5 h-3.5 text-[#002660]/70" />
+            </a>
+          )}
+
+          {activity.allImageURL && (
+            <a
+              href={activity.allImageURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-bold text-[#6b4700] bg-amber-50/90 hover:bg-amber-100/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-amber-200/80 shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            >
+              <Camera className="w-4 h-4 text-[#cca730]" />
+              <span>Full Photo Album</span>
+              <ExternalLink className="w-3.5 h-3.5 text-[#cca730]" />
+            </a>
           )}
 
           {/* {activity.qrCode && (

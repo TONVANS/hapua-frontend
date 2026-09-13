@@ -2,13 +2,14 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { FileText, Sparkles } from 'lucide-react';
+import { FileText, Sparkles, ExternalLink } from 'lucide-react';
 
 interface ActivityOverviewCardProps {
   description?: string | null;
+  docURL?: string | null;
 }
 
-export function ActivityOverviewCard({ description }: ActivityOverviewCardProps) {
+export function ActivityOverviewCard({ description, docURL }: ActivityOverviewCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -35,6 +36,33 @@ export function ActivityOverviewCard({ description }: ActivityOverviewCardProps)
           </p>
         )}
       </div>
+
+      {docURL && (
+        <div className="mt-4 pt-4 border-t border-slate-200/80">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-gradient-to-r from-blue-50/80 via-white to-blue-50/40 border border-blue-200/70 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#002660] text-white flex items-center justify-center shadow-xs shrink-0">
+                <FileText className="w-5 h-5 text-[#ffe088]" />
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-[#002660]">Official Session Documentation</h3>
+                <p className="text-[11px] text-[#4f616f]">
+                  Ministerial brief, session presentation slides, or agenda documentation
+                </p>
+              </div>
+            </div>
+            <a
+              href={docURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#002660] hover:bg-[#1a3c7d] text-white text-xs font-bold shadow-md shadow-[#002660]/15 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shrink-0"
+            >
+              <span>Open Document</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }

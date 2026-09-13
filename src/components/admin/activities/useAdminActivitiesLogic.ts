@@ -43,12 +43,12 @@ export function useAdminActivitiesLogic() {
 
   const createForm = useForm<CreateActivityFormData>({
     resolver: zodResolver(createActivitySchema),
-    defaultValues: { name: '', description: '', date: '', startTime: '09:00', endTime: '11:00', roomId: '' },
+    defaultValues: { name: '', description: '', docURL: '', allImageURL: '', date: '', startTime: '09:00', endTime: '11:00', roomId: '' },
   });
 
   const editForm = useForm<UpdateActivityFormData>({
     resolver: zodResolver(updateActivitySchema),
-    defaultValues: { name: '', description: '', date: '', startTime: '09:00', endTime: '11:00', roomId: '' },
+    defaultValues: { name: '', description: '', docURL: '', allImageURL: '', date: '', startTime: '09:00', endTime: '11:00', roomId: '' },
   });
 
   const fetchData = useCallback(async () => {
@@ -76,6 +76,8 @@ export function useAdminActivitiesLogic() {
     createForm.reset({
       name: '',
       description: '',
+      docURL: '',
+      allImageURL: '',
       date: toDateInputValue(new Date()),
       startTime: '09:00',
       endTime: '11:00',
@@ -90,6 +92,8 @@ export function useAdminActivitiesLogic() {
       await createActivity({
         name: data.name.trim(),
         description: data.description?.trim() || undefined,
+        docURL: data.docURL?.trim() || undefined,
+        allImageURL: data.allImageURL?.trim() || undefined,
         date: data.date,
         startTime: toISOStringFromDateTime(data.date, data.startTime),
         endTime: toISOStringFromDateTime(data.date, data.endTime),
@@ -112,6 +116,8 @@ export function useAdminActivitiesLogic() {
     editForm.reset({
       name: activity.name || '',
       description: activity.description || '',
+      docURL: activity.docURL || '',
+      allImageURL: activity.allImageURL || '',
       date: toDateInputValue(activity.date) || '',
       startTime: toTimeInputValue(activity.startTime, '09:00'),
       endTime: toTimeInputValue(activity.endTime, '11:00'),
@@ -128,6 +134,8 @@ export function useAdminActivitiesLogic() {
       await updateActivity(selectedActivity.id, {
         name: data.name?.trim(),
         description: data.description !== undefined ? data.description.trim() : undefined,
+        docURL: data.docURL !== undefined ? data.docURL.trim() : undefined,
+        allImageURL: data.allImageURL !== undefined ? data.allImageURL.trim() : undefined,
         date: eventDate ? eventDate.split('T')[0] : undefined,
         startTime: data.startTime ? toISOStringFromDateTime(eventDate, data.startTime) : undefined,
         endTime: data.endTime ? toISOStringFromDateTime(eventDate, data.endTime) : undefined,

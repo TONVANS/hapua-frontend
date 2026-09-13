@@ -9,6 +9,8 @@ export interface Activity {
   name: string;
   description?: string | null;
   qrCode?: string | null;
+  docURL?: string | null;
+  allImageURL?: string | null;
   date: string;
   startTime: string;
   endTime: string;
@@ -35,6 +37,8 @@ export interface Activity {
 export interface CreateActivityDto {
   name: string;
   description?: string;
+  docURL?: string;
+  allImageURL?: string;
   date: string;
   startTime: string;
   endTime: string;
@@ -46,6 +50,8 @@ export interface CreateActivityDto {
 export interface UpdateActivityDto {
   name?: string;
   description?: string;
+  docURL?: string;
+  allImageURL?: string;
   date?: string;
   startTime?: string;
   endTime?: string;
@@ -58,6 +64,8 @@ export interface AgendaItem {
   id: string;
   name: string;
   description?: string | null;
+  docURL?: string | null;
+  allImageURL?: string | null;
   date: string;
   startTime: string;
   endTime: string;
