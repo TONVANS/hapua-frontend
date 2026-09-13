@@ -9,6 +9,7 @@ import {
   PaginatedResponse,
   PaginationQuery,
   RegisterActivityDto,
+  SiteVisitStats,
   TravelRecommend,
 } from '@/types';
 
@@ -107,6 +108,22 @@ export const publicService = {
       '/public/registration/activity',
       payload
     );
+    return response.data;
+  },
+
+  /**
+   * Record site visit (with anti-spam deduplication): POST /public/visit
+   */
+  async recordVisit(path?: string): Promise<SiteVisitStats> {
+    const response = await apiClient.post<SiteVisitStats>('/public/visit', { path });
+    return response.data;
+  },
+
+  /**
+   * Get current site visit stats without incrementing: GET /public/visit
+   */
+  async getVisitStats(): Promise<SiteVisitStats> {
+    const response = await apiClient.get<SiteVisitStats>('/public/visit');
     return response.data;
   },
 };

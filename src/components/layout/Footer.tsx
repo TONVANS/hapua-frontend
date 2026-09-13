@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Globe, Mail, MapPin, Shield } from 'lucide-react';
+import { VisitorCounter } from './VisitorCounter';
 
 export function Footer() {
   return (
@@ -94,9 +95,10 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-[#e0e3e5] mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-[#747781] gap-4">
+        {/* Bottom Bar with Visitor Counter */}
+        <div className="border-t border-[#e0e3e5] mt-10 pt-6 flex flex-col lg:flex-row justify-between items-center text-xs text-[#747781] gap-4">
           <p>© 2026 42nd HAPUA Council Secretariat. All rights reserved.</p>
+          <VisitorCounter />
           <p className="flex items-center gap-1 text-[#4f616f]">
             <span>Serene Protocol Design System</span>
             <span>•</span>
@@ -107,3 +109,4 @@ export function Footer() {
     </footer>
   );
 }
+

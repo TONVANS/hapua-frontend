@@ -9,3 +9,4 @@ export * from './hotel';
 export * from './travel';
 export * from './report';
 export * from './landing';
+export * from './visit';
