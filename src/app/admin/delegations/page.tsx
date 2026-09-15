@@ -32,6 +32,7 @@ export default function AdminDelegationsPage() {
     selectedDelegation,
     setSelectedDelegation,
     submitting,
+    exporting,
     createForm,
     editForm,
     fetchData,
@@ -39,6 +40,7 @@ export default function AdminDelegationsPage() {
     openEditModal,
     handleEditSubmit,
     handleDelete,
+    handleExport,
   } = useAdminDelegationsLogic();
 
   return (
@@ -55,6 +57,8 @@ export default function AdminDelegationsPage() {
         loading={loading}
         onRefresh={fetchData}
         onOpenCreate={() => { createForm.reset(); setCreateOpen(true); }}
+        onExport={handleExport}
+        exporting={exporting}
       />
 
       <DelegationsTable

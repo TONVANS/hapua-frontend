@@ -82,6 +82,17 @@ export const adminService = {
     return response.data;
   },
 
+  async exportDelegations(
+    params?: { search?: string; countryId?: string; organizationId?: string }
+  ): Promise<Blob> {
+    const response = await apiClient.get('/admin/delegations/export', {
+      params,
+      responseType: 'blob',
+      timeout: 120000,
+    });
+    return response.data as Blob;
+  },
+
   // ----------------------------------------------------
   // Activities
   // ----------------------------------------------------

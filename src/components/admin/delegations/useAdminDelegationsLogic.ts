@@ -27,6 +27,7 @@ export function useAdminDelegationsLogic() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedDelegation, setSelectedDelegation] = useState<Delegation | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const createForm = useForm<CreateDelegationFormData>({
     resolver: zodResolver(createDelegationSchema),
@@ -156,6 +157,38 @@ export function useAdminDelegationsLogic() {
     }
   };
 
+  const handleExport = async () => {
+    setExporting(true);
+    const toastId = toast.loading('Exporting delegations...');
+    try {
+      const blob = await adminService.exportDelegations({
+        search: search.trim() || undefined,
+        countryId: selectedCountry || undefined,
+        organizationId: selectedOrg || undefined,
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const dateStr = new Date().toISOString().split('T')[0];
+      a.download = `delegations_export_${dateStr}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+      toast.success('Delegations exported successfully!', { id: toastId });
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
+      toast.error(
+        axiosErr.response?.data?.message || 'Failed to export delegations',
+        { id: toastId },
+      );
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return {
     delegations,
     countries,
@@ -179,6 +212,7 @@ export function useAdminDelegationsLogic() {
     selectedDelegation,
     setSelectedDelegation,
     submitting,
+    exporting,
     createForm,
     editForm,
     fetchData,
@@ -186,5 +220,6 @@ export function useAdminDelegationsLogic() {
     openEditModal,
     handleEditSubmit,
     handleDelete,
+    handleExport,
   };
 }

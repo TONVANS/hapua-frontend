@@ -91,6 +91,9 @@ export function Footer() {
                 <Globe className="w-4 h-4 text-[#002660] shrink-0" />
                 <span>www.hapua.org</span>
               </div>
+              <div className="flex items-center gap-2.5">
+                <VisitorCounter />
+              </div>
             </div>
           </div>
         </div>
@@ -98,9 +101,7 @@ export function Footer() {
         {/* Bottom Bar with Visitor Counter */}
         <div className="border-t border-[#e0e3e5] mt-10 pt-6 flex flex-col lg:flex-row justify-between items-center text-xs text-[#747781] gap-4">
           <p>© 2026 42nd HAPUA Council Secretariat. All rights reserved.</p>
-          <VisitorCounter />
           <p className="flex items-center gap-1 text-[#4f616f]">
-            <span>Serene Protocol Design System</span>
             <span>•</span>
             <span>Luang Prabang, Lao PDR</span>
           </p>

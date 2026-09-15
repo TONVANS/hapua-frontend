@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Plus, Search, RefreshCw, Globe, Building2, X } from 'lucide-react';
+import { Plus, Search, RefreshCw, Globe, Building2, X, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Combobox } from '@/components/ui/combobox';
@@ -17,6 +17,8 @@ interface DelegationsHeaderBarProps {
   loading: boolean;
   onRefresh: () => void;
   onOpenCreate: () => void;
+  onExport: () => void;
+  exporting?: boolean;
 }
 
 export function DelegationsHeaderBar({
@@ -31,6 +33,8 @@ export function DelegationsHeaderBar({
   loading,
   onRefresh,
   onOpenCreate,
+  onExport,
+  exporting = false,
 }: DelegationsHeaderBarProps) {
   const countryOptions = useMemo(() => [
     { value: '', label: 'All Countries' },
@@ -69,6 +73,16 @@ export function DelegationsHeaderBar({
           >
             <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onExport}
+            disabled={exporting || loading}
+            className="rounded-xl border-[#002660]/20 text-[#002660] hover:bg-[#002660]/5 cursor-pointer font-medium"
+          >
+            <Download className={`w-3.5 h-3.5 mr-1.5 ${exporting ? 'animate-bounce' : ''}`} />
+            {exporting ? 'Exporting...' : 'Export'}
           </Button>
           <Button
             onClick={onOpenCreate}
