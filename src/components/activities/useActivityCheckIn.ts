@@ -4,6 +4,10 @@ import { publicService } from '@/services';
 import { Activity, Delegation } from '@/types';
 import { isActivityDateReached } from '@/components/admin/activities/utils';
 
+const STORAGE_DELEGATE_CODE = 'hapua_delegate_code';
+const STORAGE_VERIFIED_DELEGATE = 'hapua_verified_delegate';
+const STORAGE_REGISTERED_ACTIVITIES = 'hapua_registered_activities';
+
 export function useActivityCheckIn(activityId: string) {
   const router = useRouter();
 
@@ -17,8 +21,10 @@ export function useActivityCheckIn(activityId: string) {
   const [verifiedDelegate, setVerifiedDelegate] = useState<Delegation | null>(null);
   const [verifyError, setVerifyError] = useState<string | null>(null);
   const [registering, setRegistering] = useState(false);
+  const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  // Fetch Activity Data
   useEffect(() => {
     async function fetchActivity() {
       try {
@@ -33,9 +39,37 @@ export function useActivityCheckIn(activityId: string) {
     if (activityId) fetchActivity();
   }, [activityId]);
 
+  // Read saved delegate & registration state from LocalStorage on mount
+  useEffect(() => {
+    try {
+      const savedCode = localStorage.getItem(STORAGE_DELEGATE_CODE);
+      const savedDelegateStr = localStorage.getItem(STORAGE_VERIFIED_DELEGATE);
+      if (savedCode) {
+        setDelegationCode(savedCode);
+      }
+      if (savedDelegateStr) {
+        const parsed = JSON.parse(savedDelegateStr);
+        if (parsed && parsed.id) {
+          setVerifiedDelegate(parsed);
+        }
+      }
+
+      const savedRegsStr = localStorage.getItem(STORAGE_REGISTERED_ACTIVITIES);
+      if (savedRegsStr) {
+        const regs: string[] = JSON.parse(savedRegsStr);
+        if (Array.isArray(regs) && (regs.includes(activityId) || (activity?.id && regs.includes(activity.id)))) {
+          setIsAlreadyRegistered(true);
+        }
+      }
+    } catch {
+      // Ignore storage read errors in SSR/privacy mode
+    }
+  }, [activityId, activity?.id]);
+
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!delegationCode.trim()) return;
+    const cleanCode = delegationCode.trim().toUpperCase();
+    if (!cleanCode) return;
 
     if (activity && !isActivityDateReached(activity)) {
       setVerifyError('Registration is not yet open. It will open on the activity start date.');
@@ -46,9 +80,15 @@ export function useActivityCheckIn(activityId: string) {
     setVerifyError(null);
 
     try {
-      const res = await publicService.checkDelegation(delegationCode.trim());
+      const res = await publicService.checkDelegation(cleanCode);
       if (res && res.id) {
         setVerifiedDelegate(res);
+        try {
+          localStorage.setItem(STORAGE_DELEGATE_CODE, cleanCode);
+          localStorage.setItem(STORAGE_VERIFIED_DELEGATE, JSON.stringify(res));
+        } catch {
+          // Ignore storage write errors
+        }
       } else {
         setVerifyError('Delegation code not found in council records.');
       }
@@ -74,18 +114,36 @@ export function useActivityCheckIn(activityId: string) {
     setRegistering(true);
     setVerifyError(null);
 
+    const markRegisteredLocally = (actId: string) => {
+      setIsAlreadyRegistered(true);
+      try {
+        const savedRegsStr = localStorage.getItem(STORAGE_REGISTERED_ACTIVITIES);
+        const regs: string[] = savedRegsStr ? JSON.parse(savedRegsStr) : [];
+        if (!regs.includes(actId)) {
+          regs.push(actId);
+          localStorage.setItem(STORAGE_REGISTERED_ACTIVITIES, JSON.stringify(regs));
+        }
+      } catch {
+        // Ignore storage errors
+      }
+    };
+
     try {
+      const targetId = activity.id || activityId;
       await publicService.registerForActivity({
-        delegationCode: delegationCode.trim(),
-        activityId: activity.id || activityId,
+        delegationCode: delegationCode.trim().toUpperCase(),
+        activityId: targetId,
       });
+      markRegisteredLocally(targetId);
       setShowSuccessModal(true);
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
       const msg = axiosErr.response?.data?.message || 'Registration failed or session limit reached.';
 
-      // If already registered, still celebrate and allow navigating to agenda
+      // If already registered, still celebrate and mark registered
       if (msg.toLowerCase().includes('already registered')) {
+        const targetId = activity.id || activityId;
+        markRegisteredLocally(targetId);
         setShowSuccessModal(true);
       } else {
         setVerifyError(msg);
@@ -99,6 +157,12 @@ export function useActivityCheckIn(activityId: string) {
     setVerifiedDelegate(null);
     setDelegationCode('');
     setVerifyError(null);
+    try {
+      localStorage.removeItem(STORAGE_VERIFIED_DELEGATE);
+      localStorage.removeItem(STORAGE_DELEGATE_CODE);
+    } catch {
+      // Ignore storage errors
+    }
   };
 
   const handleNavigateToAgenda = () => {
@@ -121,6 +185,7 @@ export function useActivityCheckIn(activityId: string) {
     verifiedDelegate,
     verifyError,
     registering,
+    isAlreadyRegistered,
     showSuccessModal,
     setShowSuccessModal,
     handleVerifyCode,

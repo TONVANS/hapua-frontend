@@ -136,7 +136,7 @@ export function ActivityRegistrationSidebar({
           </p>
 
           <Input
-            placeholder="DELEGATION CODE (E.G. HAP-LA9)"
+            placeholder="DELEGATION ID (ID: XXXX)"
             value={delegationCode}
             disabled={isRegistrationDisabled}
             onChange={(e) => setDelegationCode(e.target.value.toUpperCase())}

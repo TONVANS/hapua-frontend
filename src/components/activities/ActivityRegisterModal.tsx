@@ -376,7 +376,7 @@ export function ActivityRegisterModal({
 
                 <div>
                   <Input
-                    placeholder="e.g. HAP-LA1 or HAPUA-DEL-001"
+                    placeholder="Enter your ID badge number (ID: XXXX)"
                     value={delegationCode}
                     disabled={isRegistrationDisabled}
                     onChange={(e) => setDelegationCode(e.target.value.toUpperCase())}
