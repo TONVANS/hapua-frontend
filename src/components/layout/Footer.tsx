@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Globe, Mail, MapPin, Shield } from 'lucide-react';
+import { Globe, Mail, MapPin, Shield, ExternalLink } from 'lucide-react';
 import { VisitorCounter } from './VisitorCounter';
 
 export function Footer() {
@@ -43,6 +43,17 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/activities" className="hover:text-[#002660] transition-colors">Activities</Link>
+              </li>
+              <li>
+                <a
+                  href="https://edl-drive.edl.com.la/s/BSCXqM9fz93w6ys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#002660] transition-colors inline-flex items-center gap-1"
+                >
+                  <span>Galleries</span>
+                  <ExternalLink className="w-3 h-3 opacity-60" />
+                </a>
               </li>
               <li>
                 <Link href="/hotels" className="hover:text-[#002660] transition-colors">Accommodations</Link>

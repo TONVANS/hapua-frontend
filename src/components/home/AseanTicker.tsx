@@ -142,6 +142,18 @@ export const ORGANIZATIONS: OrganizationMember[] = [
     highlight: 'Sultanate Grid Resilience & Reliability',
   },
   {
+    id: 'moee',
+    code: 'MOEE',
+    name: 'Ministry of Electricity and Energy',
+    fullName: 'Ministry of Electricity and Energy (MOEE)',
+    country: 'Myanmar',
+    countryCode: 'MM',
+    logo: '/logo_organization/MOEE.webp',
+    category: 'National Utility',
+    role: 'Government ministry responsible for electricity generation, high-voltage transmission, and power distribution across Myanmar.',
+    highlight: 'National Power Grid & Regional Interconnection',
+  },
+  {
     id: 'ace',
     code: 'ACE',
     name: 'ASEAN Centre for Energy',
@@ -317,7 +329,7 @@ export function AseanTicker() {
               Member Utilities & Partner Organizations
             </h2>
             <p className="text-xs sm:text-sm text-[#4f616f] mt-1 max-w-2xl font-normal">
-              19 Member State utilities, regional institutions, and energy authorities advancing the ASEAN Power Grid (APG) interconnectivity.
+              {ORGANIZATIONS.length} Member State utilities, regional institutions, and energy authorities advancing the ASEAN Power Grid (APG) interconnectivity.
             </p>
           </div>
 
@@ -346,7 +358,7 @@ export function AseanTicker() {
                     ? 'bg-white text-[#002660] shadow-xs cursor-default'
                     : 'text-[#4f616f] hover:text-[#002660] cursor-pointer'
                 }`}
-                title="All 18 Organizations Grid"
+                title={`All ${ORGANIZATIONS.length} Organizations Grid`}
               >
                 <Grid3X3 className="w-3.5 h-3.5" />
                 <span>Grid ({ORGANIZATIONS.length})</span>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Calendar, UserCheck, Shield } from 'lucide-react';
+import { Menu, X, Calendar, UserCheck, Shield, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function Header() {
@@ -23,6 +23,7 @@ export function Header() {
     { label: 'Overview', href: '/' },
     { label: 'Agenda', href: '/agenda' },
     { label: 'Activities', href: '/activities' },
+    { label: 'Galleries', href: 'https://edl-drive.edl.com.la/s/BSCXqM9fz93w6ys', external: true },
     { label: 'Hotel Guide', href: '/hotels' },
     { label: 'Travel Guide', href: '/travel' },
   ];
@@ -78,9 +79,23 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6 lg:gap-8">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
+              if (link.external) {
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium transition-all relative py-1 text-[#444650] hover:text-[#002660] inline-flex items-center gap-1 group"
+                  >
+                    <span>{link.label}</span>
+                    <ExternalLink className="w-3 h-3 text-[#444650]/60 group-hover:text-[#002660] transition-colors" />
+                  </a>
+                );
+              }
               return (
                 <Link
                   key={link.label}
@@ -137,18 +152,32 @@ export function Header() {
           <div className="md:hidden glass-modal border-t border-[#e2e8f0] px-4 pt-3 pb-6 mt-3 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="flex flex-col space-y-2">
               {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    pathname === link.href
-                      ? 'bg-[#d2e5f6] text-[#002660] font-semibold'
-                      : 'text-[#444650] hover:bg-[#f2f4f6]'
-                  }`}
-                >
-                  {link.label}
-                </Link>
+                link.external ? (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-2 rounded-lg text-sm font-medium transition-colors text-[#444650] hover:bg-[#f2f4f6] flex items-center justify-between"
+                  >
+                    <span>{link.label}</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-[#444650]/70" />
+                  </a>
+                ) : (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      pathname === link.href
+                        ? 'bg-[#d2e5f6] text-[#002660] font-semibold'
+                        : 'text-[#444650] hover:bg-[#f2f4f6]'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                )
               ))}
               <div className="pt-2 border-t border-[#e2e8f0] flex flex-col gap-2">
                 <Link
